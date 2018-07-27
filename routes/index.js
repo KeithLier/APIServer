@@ -1,6 +1,8 @@
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var router = express.Router();
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -24,8 +26,33 @@ router.post('/post', urlencodedParser, function(req, res, next){
        'gender':req.body.gender
    };
    console.log('body' + req.body);
-  //  response.end(JSON.stringify(data));
+   res.end(JSON.stringify(data));
    res.json(data);
+});
+
+// 上传文件接口
+
+router.use(express.bodyParser({
+  uploadDir: __dirname + '/../var/uploads',
+  keepExtensions: true,
+  limit: 100 * 1024 * 1024,
+  defer: true
+})).use('/file/public', express.static(__dirname + '/../public'));
+
+router.post('file/upload', function (req, res) {
+  req.form.on('progress', function (bytesReceived, bytesExpected) {
+ 
+  });
+
+  req.form.on('end', function () {
+      var tmp_path = req.files.file.path;
+      var name = req.files.file.name;
+
+      console.log("tmp_path: "+ tmp_path);
+      console.log("name: "+name);
+
+      res.end("success");
+  });
 });
 
 
