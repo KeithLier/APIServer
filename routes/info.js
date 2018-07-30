@@ -1,3 +1,4 @@
+
 function Info() {
     this.url;
     this.status;
@@ -8,3 +9,4 @@ function Info() {
 }
 
 module.exports = Info;
+

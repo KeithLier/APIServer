@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var settings = require('./routes/setting');
 
 var app = express();
 
@@ -37,5 +38,16 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// app.use(session({
+//   secret: settings.cookieSecret,
+//   key: settings.db,//cookie name
+//   cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+//   resave: false,
+//   saveUninitialized: true,
+//   store: new MongoStore({
+//     url:('mongodb://192.168.133.54:27017/server'),
+//   })
+// }));
 
 module.exports = app;
