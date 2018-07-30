@@ -2,6 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
 
 var URL = require('url');
 var Person = require('./person');
@@ -16,27 +17,15 @@ router.get('/', function(req, res, next) {
   res.send(JSON.stringify(obj));
 });
 
-router.get('/getPersonInfo', function(req, res, next) {
-  var person = new Person();
-  var params = URL.parse(req.url, true).query;
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-  if(params.id == 1) {
-    person.name = 'Keith';
-    person.city = 'ShangHai';
-    person.age = '28';
-    person.sex = 'M';
-  } else {
-    person.name = 'Leon';
-    person.city = 'BeiJing';
-    person.age = '25';
-    person.sex = 'W';
+router.post('/info',urlencodedParser, function(req, res, next) {
+  console.log(req.body);
+  var obj = {
+    name: 'keith',
+    age: '28'
   }
-  var response = {
-    status: 1,
-    data: person
-  };
-  res.send(JSON.stringify(response));
-
-});
+  res.end(JSON.stringify(obj));
+})
 
 module.exports = router;
