@@ -1,6 +1,8 @@
 
 var status = require('./status'),
-    db = require('mongonskin').db('mongodb://192.168.133.54:27017/server',{native_parser:true});
+
+db = require('mongoskin').db('mongodb://192.168.133.54:27017/server',{useNewUrlParser:true});
+
 var CURD = function(collection) {
     this.collection = collection;
     db.bind(this.collection);
@@ -16,7 +18,9 @@ CURD.prototype = {
     * */
     add: function(query, callback) {
         db[this.collection].insert(query, function(err, item){
+            console.log('=========' + query);
             if(err){
+                console.log(err);
                 return callback(status.fail);
             }
             var obj = {
