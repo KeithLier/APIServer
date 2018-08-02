@@ -1,5 +1,5 @@
 
-var status = require('./status'),
+var status = require('./status');
 
 db = require('mongoskin').db('mongodb://192.168.133.54:27017/server',{useNewUrlParser:true});
 
@@ -63,7 +63,7 @@ CURD.prototype = {
     *
     * */
     find: function(query,field,sort,skip,limit,callback) {
-        db[this.collection].find(query,field),sort(sort).skip(skip).limit(limit).toArray(function(err, items){
+        db[this.collection].find(query,field).sort(sort).skip(skip).limit(limit).toArray(function(err, items){
             if(err){
                 return callback(status.fail);
             }
@@ -171,113 +171,6 @@ CURD.prototype = {
             return callback(obj);
         });
     },
-        /*
-    * @des：更新一条记录
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @updateModel：需要更新的JSON格式的模型
-    * @callback：返回成功或者失败信息
-    *
-    * */
-    update: function(query, updateModel, callback){
-        var set = {$set: updateModel};
-        db[this.collection].update(query, set, function(err){
-            if(err){
-                return callback(status.fail);
-            }else{
-                return callback(status.success);
-            }
-        });
-    },
-
-    /*
-    * @des：删除一条记录
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @callback：返回失败或者成功的信息
-    *
-    * */
-	delete: function(query, callback){
-		db[this.collection].remove(query, function(err){
-			if(err){
-				return callback(status.fail);
-			}else{
-				return callback(status.success);
-			}
-		});
-	},
-
-    /*
-    * @des：计算总数
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @callback：返回失败或者成功的信息
-    *
-    * */
-    count: function(query, callback){
-        db[this.collection].count(query, function(err, items) {
-            if(err){
-                return callback(status.fail);
-            }
-            var obj = {
-                status: status.success.status,
-                message: status.success.message,
-                items: items
-            };
-            return callback(obj);
-        });
-    },
-
-    /*
-    * @des：更新一条记录
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @updateModel：需要更新的JSON格式的模型
-    * @callback：返回成功或者失败信息
-    *
-    * */
-    update: function(query, updateModel, callback){
-        var set = {$set: updateModel};
-        db[this.collection].update(query, set, function(err){
-            if(err){
-                return callback(status.fail);
-            }else{
-                return callback(status.success);
-            }
-        });
-    },
-
-    /*
-    * @des：删除一条记录
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @callback：返回失败或者成功的信息
-    *
-    * */
-	delete: function(query, callback){
-		db[this.collection].remove(query, function(err){
-			if(err){
-				return callback(status.fail);
-			}else{
-				return callback(status.success);
-			}
-		});
-	},
-
-    /*
-    * @des：计算总数
-    * @query：查询条件，Mongo查询的JSON字面量
-    * @callback：返回失败或者成功的信息
-    *
-    * */
-    count: function(query, callback){
-        db[this.collection].count(query, function(err, items) {
-            if(err){
-                return callback(status.fail);
-            }
-            var obj = {
-                status: status.success.status,
-                message: status.success.message,
-                items: items
-            };
-            return callback(obj);
-        });
-    },  
     /**
 	 * 关闭数据库
 	 * @return nil
