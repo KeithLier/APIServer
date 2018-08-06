@@ -9,12 +9,12 @@ var person = require('./person');
 
 var db = require('./mongodb.js');
 var xml2json=require('xml2json');
+var querystring = require('querystring');
 
 // parser json
 router.use(bodyParser.json());
 
 router.use(bodyParser.urlencoded({ extended: true }));
-
 
 router.get('/', function(req, res, next) {
   var obj = {
@@ -26,33 +26,10 @@ router.get('/', function(req, res, next) {
 
   }
   db.findOne('port',where,field, function(err, result) {
-    res.json(result);
+    console.log(result);
+    return res.json(result);
   });
-  
-  res.send(JSON.stringify(obj));
 });
-
-
-router.post('/info', function(req, res, next) {
-  console.log(req.body);
-
-  res.json(req.body);
-})
-
-router.post('/postUser', function(req, res) {
-    console.log(req.body);
-    var user = {
-      name: req.body.name,
-      city: req.body.city,
-      age: req.body.age
-    };
-    console.log(user);
-    db.insertOne('port',user, function(err, result) {
-      console.log(result);
-      res.json(result);
-    });
-    res.end('success');
-})
 
 router.post('/postApi', function(req, res) {
   console.log(req.headers);
@@ -61,7 +38,8 @@ router.post('/postApi', function(req, res) {
   console.log(datas);
   db.insertMany('port',datas, function(err, result) {
     console.log(result);
+    return res.json(result);
   });
-  res.end('success');
-})
+});
+
 module.exports = router;
