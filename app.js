@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -38,15 +40,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-// app.use(session({
-//   secret: settings.cookieSecret,
-//   key: settings.db,//cookie name
-//   cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
-//   resave: false,
-//   saveUninitialized: true,
-//   store: new MongoStore({
-//     url:('mongodb://192.168.133.54:27017/server'),
-//   })
-// }));
 
 module.exports = app;
