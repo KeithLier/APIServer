@@ -16,16 +16,9 @@ router.use(bodyParser.json());
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.get('/', function(req, res, next) {
-  var obj = {
-    name: 'keith',
-    age: '28'
-  }
-  var where = {name:'peco'};
-  var field = {
-
-  }
-  db.findOne('port',where,field, function(err, result) {
+router.get('/get', function(req, res, next) {
+  var query = [{$group:{"_id":"$url","count":{$sum:1}}}];
+  db.aggregate('port',query, function(err, result) {
     console.log(result);
     return res.json(result);
   });
@@ -41,5 +34,6 @@ router.post('/postApi', function(req, res) {
     return res.json(result);
   });
 });
+
 
 module.exports = router;

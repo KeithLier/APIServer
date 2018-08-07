@@ -181,3 +181,22 @@ module.exports.count = function(collection, query, callback) {
         });
     });
 }
+    /*
+    * @des：分组
+    * @collection: 表名
+    * @query：查询条件
+    * @callback：返回失败或者成功的信息
+    *
+    * */
+module.exports.aggregate = function(collection, query, callback) {
+    _connectDB(function(err,db) {
+        if(err) {
+            return callback(err,db);
+        };
+        var dbase = db.db("server");
+        dbase.collection(collection).aggregate(query).toArray(function(err, result){
+            callback(err, result);
+            db.close();
+        });
+    });
+}
