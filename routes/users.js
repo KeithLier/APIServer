@@ -15,7 +15,25 @@ router.get('/get', function(req, res, next) {
     async.map(result, function(item, callback) {
       var url = item['_id'];
       db.find('port',{"url":url},{},{},0,0, function(err, r) {
-        item['r'] = r;
+        // item['r'] = r;
+        var maxTime = 0;
+        var totalTime = 0;
+        var fail = 0;
+        r.forEach(element => {
+          var spendTime = element['spendTime'];
+          totalTime += spendTime;
+          if(spendTime > maxTime) {
+            maxTime = spendTime;
+          }
+          var success = element['success'];
+          if(!success) {
+            fail++;
+          }
+        });
+        item['maxTime'] = maxTime;
+        item['argv'] = totalTime / r.length;
+        item['fail'] = (fail / r.length * 100) + '%';
+
         callback(null,item);
       });
     }, function(err, results){
