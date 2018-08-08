@@ -10,6 +10,7 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get('/get', function(req, res, next) {
+  console.log('get -----');
   var query = [{$group:{"_id":"$url","count":{$sum:1}}}];
   db.aggregate('port',query, function(err, result) {
     async.map(result, function(item, callback) {
@@ -33,10 +34,10 @@ router.get('/get', function(req, res, next) {
         item['maxTime'] = maxTime;
         item['argv'] = totalTime / r.length;
         item['fail'] = (fail / r.length * 100) + '%';
-
         callback(null,item);
       });
     }, function(err, results){
+      console.log(results);
       return res.json(results);
     });
   });
