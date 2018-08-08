@@ -9,7 +9,7 @@ router.use(bodyParser.json());
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.get('/get', function(req, res, next) {
+router.get('/get', function(req, res) {
   console.log('get -----');
   var query = [{$group:{"_id":"$url","count":{$sum:1}}}];
   db.aggregate('port',query, function(err, result) {
@@ -38,7 +38,11 @@ router.get('/get', function(req, res, next) {
       });
     }, function(err, results){
       console.log(results);
-      return res.json(results);
+      var data = {
+        'total': result.length,
+        'rows': result
+      }
+      return res.json(data);
     });
   });
 });
