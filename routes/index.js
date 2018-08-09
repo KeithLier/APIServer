@@ -2,60 +2,64 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var router = express.Router();
-// var ajax = require('fetch')
+var db = require('./mongodb.js');
+var async = require('async');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.use(bodyParser.json());
 
-router.get('/get', function(req, res, next) {
-  var data = {
-    'first_name': 'li',
-    'last_name': 'liang'
-  };
-  res.json(data);
+router.use(bodyParser.urlencoded({ extended: true }));
+
+router.get('/get', function(req, res) {
+  console.log('get -----');
+  var query = [{$group:{"_id":"$url","count":{$sum:1}}}];
+  db.aggregate('port',query, function(err, result) {
+    async.map(result, function(item, callback) {
+      var url = item['_id'];
+      db.find('port',{"url":url},{},{},0,0, function(err, r) {
+        // item['r'] = r;
+        var maxTime = 0;
+        var totalTime = 0;
+        var fail = 0;
+        r.forEach(element => {
+          var spendTime = element['spendTime'];
+          totalTime += spendTime;
+          if(spendTime > maxTime) {
+            maxTime = spendTime;
+          }
+          var success = element['success'];
+          if(!success) {
+            fail++;
+          }
+        });
+        item['maxTime'] = maxTime;
+        item['argv'] = totalTime / r.length;
+        item['fail'] = (fail / r.length * 100) + '%';
+        callback(null,item);
+      });
+    }, function(err, results){
+      console.log(results);
+      var data = {
+        'total': result.length,
+        'rows': result
+      }
+      return res.json(data);
+    });
+  });
 });
 
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
- 
-router.post('/post', urlencodedParser, function(req, res, next){
-  // 输出 JSON 格式
-  var data = {
-       'name':req.body.name,
-       'gender':req.body.gender
-   };
-   console.log('body' + req.body);
-   res.json(data);
-   res.end.json(data);
+router.post('/postApi', function(req, res) {
+  console.log(req.headers);
+  var datas = req.body.datas;
+
+  console.log(datas);
+  db.insertMany('port',datas, function(err, result) {
+    console.log(result);
+    return res.json(result);
+  });
 });
-
-// 上传文件接口
-
-// router.use(bodyParser({
-//   uploadDir: __dirname + '/../var/uploads',
-//   keepExtensions: true,
-//   limit: 100 * 1024 * 1024,
-//   defer: true
-// })).use('/file/public', express.static(__dirname + '/../public'));
-
-// router.post('file/upload', function (req, res) {
-//   console.log('req========' + req);
-//   req.form.on('progress', function (bytesReceived, bytesExpected) {
- 
-//   });
-
-//   req.form.on('end', function () {
-//       var tmp_path = req.files.file.path;
-//       var name = req.files.file.name;
-
-//       console.log("tmp_path: "+ tmp_path);
-//       console.log("name: "+name);
-
-//       res.end("success");
-//   });
-// });
-
-
 module.exports = router;
