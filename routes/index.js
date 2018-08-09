@@ -52,11 +52,11 @@ router.get('/get', function(req, res) {
         'rows': result
       }
 
-      res.render('get', {
+      return res.render('get', {
         dic:data
       });
 
-      return res.json(data);
+      // return res.json(data);
     });
   });
 
