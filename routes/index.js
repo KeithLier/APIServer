@@ -2,12 +2,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var router = express.Router();
+
 var db = require('./mongodb.js');
 var async = require('async');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', {
+    title: 'Express'
+  });
 });
 
 router.use(bodyParser.json());
@@ -16,6 +19,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get('/get', function(req, res) {
   console.log('get -----');
+
   var query = [{$group:{"_id":"$url","count":{$sum:1}}}];
   db.aggregate('port',query, function(err, result) {
     async.map(result, function(item, callback) {
@@ -31,7 +35,7 @@ router.get('/get', function(req, res) {
           if(spendTime > maxTime) {
             maxTime = spendTime;
           }
-          var success = element['success'];
+          var success = element['status'];
           if(!success) {
             fail++;
           }
@@ -47,10 +51,20 @@ router.get('/get', function(req, res) {
         'total': result.length,
         'rows': result
       }
+
+      res.render('get', {
+        dic:data
+      });
+
       return res.json(data);
     });
   });
+
+
+
 });
+
+
 
 router.post('/postApi', function(req, res) {
   console.log(req.headers);

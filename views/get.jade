@@ -1,0 +1,22 @@
+extends layout
+
+mixin lists(lists)
+    ul
+      -each list in lists
+        tr
+            th= list['_id']
+            th= list['maxTime']
+            th= list['argv']
+            th= list['count']
+            th= list['fail']
+
+block content
+    h1= dic.total
+    table(border=1)
+        tr
+            th= 'url'
+            th= '最大时间'
+            th= '平均时间'
+            th= '访问次数'
+            th= '失败率'
+        +lists(dic.rows)
